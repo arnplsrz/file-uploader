@@ -6,6 +6,7 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store')
 require('dotenv').config()
 require('./config/passport')
 
+const indexRoutes = require('./routes/index')
 const authRoutes = require('./routes/auth')
 
 const app = express()
@@ -16,7 +17,6 @@ app.set('views', `${__dirname}/views`)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(passport.session())
 
 app.use(
   session({
@@ -31,7 +31,9 @@ app.use(
     }),
   })
 )
+app.use(passport.session())
 
+app.use('/', indexRoutes)
 app.use('/', authRoutes)
 
 app.listen(process.env.PORT)
