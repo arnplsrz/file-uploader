@@ -1,24 +1,31 @@
-const getUpload = (req, res) => {
-  if (!req.user) return res.redirect('/signin')
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
-  res.status(200).render('index', {
-    title: 'Upload',
-    content: 'pages/upload',
-    user: req.user,
-  })
-}
-
-const postUpload = (req, res) => {
+const postUpload = async (req, res, next) => {
   console.log(req.body, req.file)
 
+  try {
+    await prisma.file.create({
+      data: {
+        name: req.file.originalname,
+        size: req.file.size,
+        type: req.file.mimetype,
+        userId: req.user.id,
+      },
+    })
+
+    return res.redirect('/')
+  } catch (err) {
+    next(err)
+  }
+
   res.status(200).render('index', {
     title: 'Upload',
-    content: 'pages/upload',
+    content: 'pages/homepage',
     user: req.user,
   })
 }
 
 module.exports = {
-  getUpload,
   postUpload,
 }
