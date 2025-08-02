@@ -20,7 +20,7 @@ const getSignin = (req, res) => {
 }
 
 const getLogout = (req, res, next) => {
-  if (!req.user) res.redirect('/signin')
+  if (!req.user) return res.redirect('/signin')
 
   req.logout(err => {
     if (err) return next(err)
