@@ -38,4 +38,12 @@ app.use('/', indexRoutes)
 app.use('/', authRoutes)
 app.use('/', uploadRoutes)
 
+app.use((req, res) => {
+  res.status(404).render('index', {
+    title: '404',
+    content: 'pages/404',
+    user: req.user,
+  })
+})
+
 app.listen(process.env.PORT)
