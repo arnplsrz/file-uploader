@@ -4,6 +4,8 @@ const prisma = new PrismaClient()
 const passport = require('passport')
 
 const getSignup = (req, res) => {
+  if (req.user) return res.redirect('/')
+
   res.status(200).render('index', {
     title: 'Signup',
     content: 'pages/signup',
@@ -12,6 +14,8 @@ const getSignup = (req, res) => {
 }
 
 const getSignin = (req, res) => {
+  if (req.user) return res.redirect('/')
+
   res.status(200).render('index', {
     title: 'Signin',
     content: 'pages/signin',
@@ -37,7 +41,7 @@ const postSignup = async (req, res, next) => {
       },
     })
 
-    res.redirect('/')
+    return res.redirect('/')
   } catch (err) {
     next(err)
   }
