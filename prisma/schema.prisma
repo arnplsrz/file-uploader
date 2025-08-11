@@ -19,7 +19,32 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  file      File[]
+
+  folder Folder[]
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  openedAt  DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Prisma's docs for self-relation
+  // https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/self-relations
+  parentId  String?
+  parent    Folder?  @relation("Subfolder", fields: [parentId], references: [id], onDelete: Cascade)
+  subfolder Folder[] @relation("Subfolder")
+
+  files File[]
+
+  @@unique([userId, path])
+  @@index([userId], type: Hash)
+  @@index([parentId], type: Hash)
 }
 
 model File {
@@ -27,10 +52,15 @@ model File {
   name      String
   size      Int
   type      String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
+  path      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  openedAt  DateTime @default(now())
+
+  folderId String?
+  folder   Folder? @relation(fields: [folderId], references: [id])
+
+  @@index([folderId], type: Hash)
 }
 
 model Session {
