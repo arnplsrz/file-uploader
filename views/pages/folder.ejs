@@ -1,0 +1,17 @@
+<% if (locals.user) { %>
+<%- include('../partials/aside') %>
+
+<% if (locals.files) { %>
+<h2>Uploaded Images</h2>
+<div class="image-grid">
+  <% files.forEach(file => { %>
+  <% if (file.type.startsWith('image/')) { %>
+  <div class="image-item">
+    <img src="<%= file.path %>" alt="<%= file.name %>" style="max-width: 300px">
+    <p><%= file.name %></p>
+  </div>
+  <% } %>
+  <% }) %>
+</div>
+<% } %>
+<% } %>
