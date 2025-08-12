@@ -1,16 +1,25 @@
 <aside>
   <% if (locals.user) { %>
-  <form action="/folder" method="post" enctype="multipart/form-data">
+  <h2>Upload File to This Folder</h2>
+  <% if (folder) { %>
+  <form action="/folder/<%= folder.id %>/upload" method="post" enctype="multipart/form-data">
     <section>
       <label for="file">Upload File</label>
       <input type="file" name="file" id="file">
     </section>
     <button type="submit">Upload File</button>
   </form>
-  <form action="/folder/create" method="post">
+  <% } else { %>
+  <p>No folder selected.</p>
+  <% } %>
+  <h2>Create a Subfolder</h2>
+  <form action="/folder/<%= folder.id %>/create" method="post">
     <section>
-      <label for="folderName"></label>
+      <label for="folderName">Enter the subfolder name:</label>
+      <input type="text" name="folderName" id="folderName" required>
     </section>
+    <button type="submit">Create Subfolder</button>
   </form>
+  <a href="/folder">Go to Root Folder</a>
   <% } %>
 </aside>

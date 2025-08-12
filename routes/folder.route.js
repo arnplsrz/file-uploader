@@ -20,7 +20,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get('/folder', isAuthenticated, folderController.getFolder)
-router.post('/folder', upload.single('file'), folderController.postFolder)
+router.get('/folder/:id', isAuthenticated, folderController.getFolderById)
+router.post('/folder/:id/upload', upload.single('file'), isAuthenticated, folderController.uploadFile)
+router.post('/folder/:id/create', isAuthenticated, folderController.createFolder)
 
 router.use('/uploads', express.static('uploads'))
 
