@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
+const { formatBytes, formatDate } = require('../utils/formatters')
+
 const getRootFolder = async userId => {
   let rootFolder = await prisma.folder.findFirst({
     where: {
@@ -22,16 +24,41 @@ const getRootFolder = async userId => {
   return rootFolder
 }
 
-const getFiles = async folderId => {
-  const files = await prisma.file.findMany({
-    where: { folderId: folderId },
-    orderBy: { createdAt: 'desc' },
-  })
+const getFilesByFolderId = async folderId => {
+  try {
+    const files = await prisma.file.findMany({
+      where: { folderId: folderId },
+    })
 
-  return files
+    return files.map(file => ({
+      ...file,
+      size: formatBytes(file.size),
+      updatedAt: formatDate(file.updatedAt),
+    }))
+  } catch (err) {
+    console.error('Error fetching files:', err)
+    throw err
+  }
+}
+
+const getSubfoldersByFolderId = async folderId => {
+  try {
+    const folders = await prisma.folder.findMany({
+      where: { parentId: folderId },
+    })
+
+    return folders.map(folder => ({
+      ...folder,
+      updatedAt: formatDate(folder.updatedAt),
+    }))
+  } catch (err) {
+    console.error('Error fetching subfolders:', err)
+    throw err
+  }
 }
 
 module.exports = {
   getRootFolder,
-  getFiles,
+  getFilesByFolderId,
+  getSubfoldersByFolderId,
 }

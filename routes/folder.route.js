@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get('/folder', isAuthenticated, folderController.getFolder)
-router.get('/folder/:id', isAuthenticated, folderController.getFolderById)
+router.get('/folder/:id', isAuthenticated, folderController.getFolderData)
 router.post('/folder/:id/upload', upload.single('file'), isAuthenticated, folderController.uploadFile)
 router.post('/folder/:id/create', isAuthenticated, folderController.createFolder)
 router.post('/folder/:id/rename', isAuthenticated, folderController.renameFolder)

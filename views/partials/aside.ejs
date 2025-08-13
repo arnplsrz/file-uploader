@@ -9,9 +9,7 @@
     </section>
     <button type="submit">Upload File</button>
   </form>
-  <% } else { %>
-  <p>No folder selected.</p>
-  <% } %>
+
   <h2>Create a Subfolder</h2>
   <form action="/folder/<%= folder.id %>/create" method="post">
     <section>
@@ -20,6 +18,16 @@
     </section>
     <button type="submit">Create Subfolder</button>
   </form>
+
+  <% if (folder.parentId) { %>
+  <a href="/folder/<%= folder.parentId %>">Go to Parent Folder</a>
+  <% } else { %>
+  <p>You are in the root folder.</p>
+  <% } %>
+  <% } else { %>
+  <p>No folder selected.</p>
+  <% } %>
+
   <a href="/folder">Go to Root Folder</a>
   <% } %>
 </aside>

@@ -8,7 +8,11 @@
   <% if (file.type.startsWith('image/')) { %>
   <div class="image-item">
     <img src="<%= file.path %>" alt="<%= file.name %>" style="max-width: 300px">
-    <p><%= file.name %></p>
+    <ul>
+      <li><%= file.name %></li>
+      <li><%= file.size %></li>
+      <li><%= file.updatedAt %></li>
+    </ul>
   </div>
   <% } %>
   <% }) %>
@@ -23,6 +27,7 @@
   <% folders.forEach(folder => { %>
   <li>
     <span><a href="/folder/<%= folder.id %>"><%= folder.name %></a></span>
+    <p><%= folder.updatedAt %></p>
     <button class="folder-options-btn" onclick="toggleOptions('<%= folder.id %>')">Options</button>
     <div id="options-<%= folder.id %>" class="folder-options" style="display: none;">
       <form action="/folder/<%= folder.id %>/rename" method="post">

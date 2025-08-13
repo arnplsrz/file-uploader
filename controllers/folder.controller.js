@@ -1,10 +1,11 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const db = require('../database/queries')
+
+const { getRootFolder, getFilesByFolderId, getSubfoldersByFolderId } = require('../database/queries')
 
 const getFolder = async (req, res, next) => {
   try {
-    const rootFolder = await db.getRootFolder(req.user.id)
+    const rootFolder = await getRootFolder(req.user.id)
 
     if (!rootFolder) {
       throw new Error('Root folder not found for the user.')
@@ -72,7 +73,7 @@ const createFolder = async (req, res, next) => {
   }
 }
 
-const getFolderById = async (req, res, next) => {
+const getFolderData = async (req, res, next) => {
   try {
     const folderId = req.params.id
 
@@ -85,13 +86,8 @@ const getFolderById = async (req, res, next) => {
       return res.status(404).send('Folder not found.')
     }
 
-    const folders = await prisma.folder.findMany({
-      where: { parentId: folderId },
-    })
-
-    const files = await prisma.file.findMany({
-      where: { folderId: folderId },
-    })
+    const folders = await getSubfoldersByFolderId(folderId)
+    const files = await getFilesByFolderId(folderId)
 
     res.render('index', {
       title: folder.name,
@@ -157,7 +153,7 @@ module.exports = {
   getFolder,
   uploadFile,
   createFolder,
-  getFolderById,
+  getFolderData,
   renameFolder,
   deleteFolder,
 }
