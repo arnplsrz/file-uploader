@@ -23,6 +23,8 @@ router.get('/folder', isAuthenticated, folderController.getFolder)
 router.get('/folder/:id', isAuthenticated, folderController.getFolderById)
 router.post('/folder/:id/upload', upload.single('file'), isAuthenticated, folderController.uploadFile)
 router.post('/folder/:id/create', isAuthenticated, folderController.createFolder)
+router.post('/folder/:id/rename', isAuthenticated, folderController.renameFolder)
+router.post('/folder/:id/delete', isAuthenticated, folderController.deleteFolder)
 
 router.use('/uploads', express.static('uploads'))
 

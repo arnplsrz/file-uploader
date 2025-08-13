@@ -107,9 +107,57 @@ const getFolderById = async (req, res, next) => {
   }
 }
 
+const renameFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id
+    const { newName } = req.body
+
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+    })
+
+    if (!folder) {
+      return res.status(404).send('Folder not found.')
+    }
+
+    await prisma.folder.update({
+      where: { id: folderId },
+      data: { name: newName },
+    })
+
+    return res.redirect(`/folder/${folderId}`)
+  } catch (err) {
+    next(err)
+  }
+}
+
+const deleteFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id
+
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+    })
+
+    if (!folder) {
+      return res.status(404).send('Folder not found.')
+    }
+
+    await prisma.folder.delete({
+      where: { id: folderId },
+    })
+
+    return res.redirect(`/folder/${folder.parentId || ''}`)
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   getFolder,
   uploadFile,
   createFolder,
   getFolderById,
+  renameFolder,
+  deleteFolder,
 }
