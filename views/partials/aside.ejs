@@ -2,19 +2,25 @@
   <% if (locals.user) { %>
   <h2>Upload File to This Folder</h2>
   <% if (folder) { %>
-  <form action="/folder/<%= folder.id %>/upload" method="post" enctype="multipart/form-data">
+  <form
+    action="/folder/<%= folder.id %>/upload"
+    method="post"
+    enctype="multipart/form-data"
+  >
     <section>
       <label for="file">Upload File</label>
-      <input type="file" name="file" id="file">
+      <input type="file" name="file" id="file" />
     </section>
-    <button type="submit">Upload File</button>
+    <button type="submit" id="uploadButton">Upload File</button>
+
+    <script src="/js/uploadHandler.js"></script>
   </form>
 
   <h2>Create a Subfolder</h2>
   <form action="/folder/<%= folder.id %>/create" method="post">
     <section>
       <label for="folderName">Enter the subfolder name:</label>
-      <input type="text" name="folderName" id="folderName" required>
+      <input type="text" name="folderName" id="folderName" required />
     </section>
     <button type="submit">Create Subfolder</button>
   </form>
@@ -23,8 +29,7 @@
   <a href="/folder/<%= folder.parentId %>">Go to Parent Folder</a>
   <% } else { %>
   <p>You are in the root folder.</p>
-  <% } %>
-  <% } else { %>
+  <% } %> <% } else { %>
   <p>No folder selected.</p>
   <% } %>
 

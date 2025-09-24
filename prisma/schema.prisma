@@ -51,14 +51,12 @@ model File {
   id        String   @id @default(cuid())
   name      String
   size      Int
-  type      String
-  path      String
+  type      String?
+  url       String 
+  folderId  String
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  openedAt  DateTime @default(now())
-
-  folderId String?
-  folder   Folder? @relation(fields: [folderId], references: [id])
 
   @@index([folderId], type: Hash)
 }
