@@ -42,23 +42,19 @@ const uploadFile = async (req, res, next) => {
       .upload(fileName, file.buffer, {
         cacheControl: "3600",
         upsert: false,
+        contentType: file.mimetype,
       });
 
     if (error) {
       throw new Error(`Supabase upload error: ${error.message}`);
     }
 
-    // Get the public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("images").getPublicUrl(fileName);
-
     await prisma.file.create({
       data: {
         name: file.originalname,
         size: file.size,
         type: file.mimetype,
-        url: publicUrl,
+        path: fileName,
         folderId: folder.id,
       },
     });
@@ -138,6 +134,10 @@ const renameFolder = async (req, res, next) => {
 
     if (!folder) {
       return res.status(404).send("Folder not found.");
+    }
+
+    if (folder.userId !== req.user.id) {
+      return res.status(403).send("Access denied.");
     }
 
     await prisma.folder.update({
