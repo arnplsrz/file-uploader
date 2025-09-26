@@ -57,8 +57,29 @@ const getSubfoldersByFolderId = async folderId => {
   }
 }
 
+const getFileById = async fileId => {
+  try {
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+    })
+
+    if (!file) return null
+
+    return {
+      ...file,
+      size: formatBytes(file.size),
+      createdAt: formatDate(file.createdAt),
+      updatedAt: formatDate(file.updatedAt),
+    }
+  } catch (err) {
+    console.error('Error fetching file:', err)
+    throw err
+  }
+}
+
 module.exports = {
   getRootFolder,
   getFilesByFolderId,
   getSubfoldersByFolderId,
+  getFileById,
 }

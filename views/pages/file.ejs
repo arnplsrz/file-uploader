@@ -1,0 +1,11 @@
+<% if (locals.user) { %>
+
+<h2>File Details</h2>
+<div class="file-details">
+  <p><strong>Name:</strong> <%= file.name %></p>
+  <p><strong>Size:</strong> <%= file.size %></p>
+  <p><strong>Upload Time:</strong> <%= file.createdAt %></p>
+  <a href="/file/<%= file.id %>/download" class="download-btn">Download File</a>
+</div>
+
+<% } %>

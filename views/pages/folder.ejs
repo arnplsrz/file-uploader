@@ -5,7 +5,7 @@
   <% if (files && files.length > 0) { %> <% files.forEach(file => { %>
   <div class="image-item">
     <ul>
-      <li><%= file.name %></li>
+      <li><a href="/file/<%= file.id %>"><%= file.name %></a></li>
       <li><%= file.size %></li>
       <li><%= file.updatedAt %></li>
     </ul>

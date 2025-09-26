@@ -10,6 +10,7 @@ require("./config/supabase");
 const indexRoutes = require("./routes/index.route");
 const authRoutes = require("./routes/auth.route");
 const folderRoutes = require("./routes/folder.route");
+const fileRoutes = require("./routes/file.route");
 
 const app = express();
 const prisma = new PrismaClient();
@@ -39,6 +40,7 @@ app.use(passport.session());
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
 app.use("/", folderRoutes);
+app.use("/", fileRoutes);
 
 app.use((req, res) => {
   res.status(404).render("index", {
