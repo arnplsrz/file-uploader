@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "File" ADD COLUMN     "path" TEXT,
+ALTER COLUMN "url" DROP NOT NULL;

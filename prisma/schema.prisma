@@ -52,7 +52,7 @@ model File {
   name      String
   size      Int
   type      String?
-  url       String 
+  path      String
   folderId  String
   folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
