@@ -1,12 +1,9 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.status(200).render('index', {
-    title: 'Home',
-    content: 'pages/homepage',
-    user: req.user,
-  })
-})
+router.get("/", (req, res) => {
+  if (!req.user) return res.redirect("/signin");
+  return res.redirect("/folder");
+});
 
-module.exports = router
+module.exports = router;
