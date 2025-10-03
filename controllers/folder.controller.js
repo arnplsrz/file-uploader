@@ -34,6 +34,12 @@ const uploadFile = async (req, res, next) => {
       return res.status(404).send("Folder not found.");
     }
 
+    if (!req.file) {
+      return res
+        .status(400)
+        .send("File upload failed: Invalid file type or size.");
+    }
+
     // Upload file to Supabase Storage
     const file = req.file;
     const fileName = `${Date.now()}-${file.originalname}`;
@@ -93,6 +99,22 @@ const createFolder = async (req, res, next) => {
   }
 };
 
+const getBreadcrumbs = async (folderId) => {
+  const breadcrumbs = [];
+  let current = await prisma.folder.findUnique({ where: { id: folderId } });
+  while (current) {
+    breadcrumbs.unshift({ id: current.id, name: current.name });
+    if (current.parentId) {
+      current = await prisma.folder.findUnique({
+        where: { id: current.parentId },
+      });
+    } else {
+      break;
+    }
+  }
+  return breadcrumbs;
+};
+
 const getFolderData = async (req, res, next) => {
   try {
     const folderId = req.params.id;
@@ -108,6 +130,7 @@ const getFolderData = async (req, res, next) => {
 
     const folders = await getSubfoldersByFolderId(folderId);
     const files = await getFilesByFolderId(folderId);
+    const breadcrumbs = await getBreadcrumbs(folderId);
 
     res.render("index", {
       title: folder.name,
@@ -115,6 +138,7 @@ const getFolderData = async (req, res, next) => {
       folder: folder,
       folders: folders,
       files: files,
+      breadcrumbs: breadcrumbs,
       user: req.user,
     });
   } catch (err) {
