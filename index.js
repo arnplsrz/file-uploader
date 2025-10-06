@@ -1,8 +1,11 @@
-const express = require("express");
-const session = require("express-session");
-const passport = require("passport");
+const express = require("express"),
+  session = require("express-session"),
+  passport = require("passport"),
+  flash = require("connect-flash");
+
 const { PrismaClient } = require("@prisma/client");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+
 require("dotenv").config();
 require("./config/passport");
 require("./config/supabase");
@@ -21,6 +24,7 @@ app.set("views", `${__dirname}/views`);
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(flash());
 
 app.use(
   session({

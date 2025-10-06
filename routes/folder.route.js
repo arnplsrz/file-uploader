@@ -31,5 +31,8 @@ router.post(
   isAuthenticated,
   folderController.deleteFolder
 );
+router.post("/folder/:id/share", isAuthenticated, folderController.shareFolder);
+
+router.get("/share/:id", folderController.getSharedFolder);
 
 module.exports = router;

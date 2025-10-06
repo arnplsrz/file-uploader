@@ -24,6 +24,7 @@
     "@supabase/supabase-js": "^2.52.1",
     "@tailwindcss/cli": "^4.1.14",
     "bcryptjs": "^3.0.2",
+    "connect-flash": "^0.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",

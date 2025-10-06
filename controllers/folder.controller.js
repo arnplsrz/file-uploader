@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const supabase = require("../config/supabase");
+const { addDays } = require("date-fns");
 
 const {
   getRootFolder,
@@ -88,6 +89,8 @@ const createFolder = async (req, res, next) => {
       data: {
         name: folderName,
         path: `${parentFolder.path}/${folderName}`,
+        isShared: parentFolder.isShared ? true : false,
+        expiresAt: parentFolder.isShared ? parentFolder.expiresAt : null,
         userId: req.user.id,
         parentId: parentFolder.id,
       },
@@ -99,12 +102,20 @@ const createFolder = async (req, res, next) => {
   }
 };
 
-const getBreadcrumbs = async (folderId) => {
+const getBreadcrumbs = async (folderId, forShared = false) => {
   const breadcrumbs = [];
   let current = await prisma.folder.findUnique({ where: { id: folderId } });
   while (current) {
-    breadcrumbs.unshift({ id: current.id, name: current.name });
-    if (current.parentId) {
+    breadcrumbs.unshift({
+      id: current.id,
+      name: current.name,
+      isShared: current.isShared,
+    });
+    if (current.parentId && forShared) {
+      current = await prisma.folder.findUnique({
+        where: { id: current.parentId, isShared: forShared },
+      });
+    } else if (current.parentId) {
       current = await prisma.folder.findUnique({
         where: { id: current.parentId },
       });
@@ -128,6 +139,7 @@ const getFolderData = async (req, res, next) => {
       return res.status(404).send("Folder not found.");
     }
 
+    const root = await getRootFolder(req.user.id);
     const folders = await getSubfoldersByFolderId(folderId);
     const files = await getFilesByFolderId(folderId);
     const breadcrumbs = await getBreadcrumbs(folderId);
@@ -135,11 +147,13 @@ const getFolderData = async (req, res, next) => {
     res.render("index", {
       title: folder.name,
       content: "pages/folder",
+      root: root,
       folder: folder,
       folders: folders,
       files: files,
       breadcrumbs: breadcrumbs,
       user: req.user,
+      message: req.flash(),
     });
   } catch (err) {
     console.error("Error in getFolderById:", err);
@@ -197,6 +211,101 @@ const deleteFolder = async (req, res, next) => {
   }
 };
 
+const shareFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id;
+
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+    });
+
+    if (!folder) {
+      req.flash("error", "Folder not found");
+      return res.redirect(`/folder/${folderId}`);
+    }
+
+    let expiresAt;
+    switch (req.body.duration) {
+      case "1 day":
+        expiresAt = addDays(new Date(), 1).toISOString();
+        break;
+      case "3 days":
+        expiresAt = addDays(new Date(), 3).toISOString();
+        break;
+      case "1 week":
+        expiresAt = addDays(new Date(), 7).toISOString();
+        break;
+      default:
+        req.flash("error", "Invalid duration selection");
+        return res.redirect(`/folder/${folderId}`);
+    }
+
+    await prisma.folder.update({
+      where: { id: folderId },
+      data: {
+        isShared: true,
+        expiresAt: expiresAt,
+      },
+    });
+
+    const link = `${req.protocol}://${req.get("host")}/share/${folderId}`;
+
+    if (req.protocol === "https") {
+      navigator.clipboard
+        .writeText(link)
+        .then(() => {
+          req.flash("success", "Link copied to clipboard");
+        })
+        .catch((err) => {
+          req.flash("error", `Failed: ${err}`);
+        });
+    } else {
+      req.flash("info", link);
+    }
+
+    return res.redirect(`/folder/${folderId}`);
+  } catch (err) {
+    req.flash("error", "An error occurred");
+  }
+};
+
+const getSharedFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id;
+
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: folderId,
+        isShared: true,
+      },
+    });
+
+    const folders = await getSubfoldersByFolderId(folderId);
+    const files = await getFilesByFolderId(folderId);
+    const breadcrumbs = await getBreadcrumbs(folderId, true);
+
+    if (folder.expiresAt.getTime() > new Date().getTime()) {
+      res.render("index", {
+        title: folder.name,
+        content: "pages/share",
+        folder: folder,
+        folders: folders,
+        files: files,
+        breadcrumbs: breadcrumbs,
+      });
+    } else {
+      await prisma.folder.update({
+        where: { id: folderId },
+        data: {
+          isShared: false,
+          expiresAt: null,
+        },
+      });
+      res.redirect("/signin");
+    }
+  } catch (err) {}
+};
+
 module.exports = {
   getFolder,
   uploadFile,
@@ -204,4 +313,6 @@ module.exports = {
   getFolderData,
   renameFolder,
   deleteFolder,
+  shareFolder,
+  getSharedFolder,
 };

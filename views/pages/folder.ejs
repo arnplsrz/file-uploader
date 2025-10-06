@@ -1,33 +1,20 @@
 <% if (locals.user) { %>
-<div class="flex flex-1">
-  <%- include('../partials/aside', { folder: folder }) %>
+  <body class="flex flex-1">
+    <%- include('../partials/aside', { folder: folder }) %>
+    <%- include("../partials/error", { message: message }) %>
   <main class="flex-1 p-6 bg-white border-l border-neutral-200 space-y-4">
-    <div class="mb-4">
-      <div class="relative mb-4">
-        <input
-          type="text"
-          placeholder="Search files..."
-          class="w-full md:w-3/5 p-2 pl-10 pr-24 border border-neutral-200 rounded"
-        />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+
+    <header class="space-y-4 *:flex *:justify-between">
+      <div class="space-x-4">
+        <div class="relative sm:w-3/5 w-full">
+          <input
+            type="text"
+            placeholder="Search files..."
+            class="w-full p-2 pl-10 border border-neutral-200 rounded"
           />
-        </svg>
-        <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded flex items-center space-x-1 hover:bg-gray-700 focus:outline-none">
-          <span>Share</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
+            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -36,17 +23,67 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-        </button>
+        </div>
+
+        <% if (root.id != folder.id) { %>
+          <div x-data="{open: false}">
+            <button
+              class="bg-gray-800 text-white font-semibold px-3 py-2 rounded hover:bg-gray-700 flex items-center space-x-2 cursor-pointer"
+              @click="open = !open"
+            >
+              <span>Share folder</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+                />
+              </svg>
+            </button>
+            <div class="absolute inset-0 bg-neutral-50/25 flex items-center justify-center" x-show="open" x-transition x-cloak>
+              <form action="/folder/<%= folder.id %>/share" method="post" class="p-4 border border-neutral-200 shadow-sm rounded-md" @click.away="open = false">
+                <fieldset>
+                  <legend class="text-lg font-semibold mb-2">Share folder</legend>
+                  <div class="space-y-2 mb-4">
+                    <div>
+                      <input type="radio" id="1 day" name="duration" value="1 day" checked>
+                      <label for="1 day" class="ml-2">1 day</label>
+                    </div>
+                    <div>
+                      <input type="radio" id="3 days" name="duration" value="3 days">
+                      <label for="3 days" class="ml-2">3 days</label>
+                    </div>
+                    <div>
+                      <input type="radio" id="1 week" name="duration" value="1 week">
+                      <label for="1 week" class="ml-2">1 week</label>
+                    </div>
+                  </div>
+                </fieldset>
+              <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">Copy link</button>
+              <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" @click="open = false">Done</button>
+          </form>
+        </div>
+          </div>
+          <% } %>
       </div>
-      <div class="flex justify-between items-center">
+
+      <div class="items-center">
         <div>
           <h1 class="text-2xl font-semibold tracking-tight text-balance">Welcome! <%= locals.user.username %></h1>
           <p class="text-gray-600">Let's continue your activity and manage your files.</p>
         </div>
-        <div class="flex items-center space-x-2">
+
+        <div class="flex items-center space-x-2" x-data>
           <button
             @click="$refs.folderDialog.showModal()"
             class="bg-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-200 flex items-center space-x-2"
@@ -68,6 +105,7 @@
             </svg>
             <span>New Folder</span>
           </button>
+
           <button
             @click="$refs.fileInput.click()"
             class="bg-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-200 flex items-center space-x-2"
@@ -89,63 +127,65 @@
             </svg>
             <span>Upload File</span>
           </button>
+
+          <dialog
+            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg"
+            x-ref="folderDialog"
+            x-transition
+          >
+            <form action="/folder/<%= folder.id %>/create" method="post">
+              <label for="folderName" class="block text-sm font-medium mb-2"
+                >Folder Name:</label
+              >
+              <input
+                type="text"
+                name="folderName"
+                id="folderName"
+                class="w-full p-2 border border-neutral-200 rounded mb-4"
+                required
+              />
+              <div class="flex justify-end gap-2">
+                <button
+                  type="button"
+                  @click="$refs.folderDialog.close()"
+                  class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+          </dialog>
+      
+          <form
+            action="/folder/<%= folder.id %>/upload"
+            method="post"
+            enctype="multipart/form-data"
+            class="hidden"
+          >
+            <input
+              type="file"
+              name="file"
+              x-ref="fileInput"
+              class="hidden"
+              @change="$el.form.submit()"
+            />
+          </form>
         </div>
       </div>
+    </header>
 
-      <dialog
-        x-ref="folderDialog"
-        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg"
-      >
-        <form action="/folder/<%= folder.id %>/create" method="post">
-          <label for="folderName" class="block text-sm font-medium mb-2"
-            >Folder Name:</label
-          >
-          <input
-            type="text"
-            name="folderName"
-            id="folderName"
-            class="w-full p-2 border border-neutral-200 rounded mb-4"
-            required
-          />
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              @click="$refs.folderDialog.close()"
-              class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Create
-            </button>
-          </div>
-        </form>
-      </dialog>
-
-      <form
-        action="/folder/<%= folder.id %>/upload"
-        method="post"
-        enctype="multipart/form-data"
-        class="hidden"
-      >
-        <input
-          type="file"
-          name="file"
-          x-ref="fileInput"
-          class="hidden"
-          @change="$el.form.submit()"
-        />
-      </form>
-    </div>
     <nav class="mb-4 flex justify-between items-center text-base text-gray-600">
       <div class="flex items-center space-x-2">
-        <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %> / <% } %>
+        <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %> /&ThickSpace; <% } %>
         <a href="/folder/<%= b.id %>" class="hover:underline"><%= b.name %></a>
         <% }) %>
-        <button class="p-1 rounded hover:bg-gray-200 focus:outline-none" title="Share">
+        <% if (folder.isShared) { %>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -158,9 +198,9 @@
               stroke-linejoin="round"
               stroke-width="2"
               d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-            />
-          </svg>
-        </button>
+              />
+            </svg>
+          <% } %>
       </div>
       <div class="flex items-center space-x-2">
         <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">Name</button>
@@ -213,25 +253,44 @@
           class="absolute top-full right-0 mt-1 w-32 bg-white border border-neutral-200 rounded z-10"
           x-cloak
         >
-          <form
-            action="/folder/<%= folder.id %>/rename"
-            method="post"
-            class="mb-2"
+        <form
+          action="/folder/<%= folder.id %>/rename"
+          method="post"
+          x-data="{ openRename: false }"
+        >
+          <div class="w-screen h-screen fixed inset-0 bg-neutral-50/25 flex items-center justify-center"
+          x-show="openRename"
+          x-transition
+>   
+            <div class="z-auto p-4 border bg-white border-neutral-100 rounded-md shadow-sm flex flex-col"           @click.away="openRename = false"
+>
+              <label class="mb-2" for="newName">Rename: <%= folder.name %></label>
+              <input
+                type="text"
+                name="newName"
+                placeholder="Rename folder"
+                class="mb-4 border border-neutral-200 rounded-md p-1 mr-2"
+                required
+              />
+              <button
+                type="submit"
+                class="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="w-full block px-4 py-2 hover:bg-gray-100 border-b border-neutral-200 text-left"
+            @click="openRename = !openRename"
           >
-            <input
-              type="text"
-              name="newName"
-              placeholder="Rename folder"
-              class="border border-neutral-200 p-1 mr-2"
-              required
-            />
-            <button
-              type="submit"
-              class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-            >
-              Rename
-            </button>
-          </form>
+            Rename
+          </button>
+
+        </form>
+
           <form
             action="/folder/<%= folder.id %>/delete"
             method="post"
@@ -239,7 +298,7 @@
           >
             <button
               type="submit"
-              class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              class="w-full block px-4 py-2 hover:bg-gray-100 text-left text-red-600"
             >
               Delete
             </button>
@@ -272,6 +331,6 @@
       <% } %>
     </div>
   </main>
-</div>
+</body>
 <% } %>
 </div>
