@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js",
-    "build-css": "npx @tailwindcss/cli -i ./public/css/styles.css -o ./public/css/output.css --watch"
+    "dev": "npx concurrently -c \"#63a155,#4bbcf5\" \"node --watch index.js\" \"npx @tailwindcss/cli -i ./public/css/styles.css -o ./public/css/output.css --watch\""
   },
   "repository": {
     "type": "git",
@@ -36,5 +35,8 @@
     "pg": "^8.16.3",
     "prisma": "^6.12.0",
     "tailwindcss": "^4.1.14"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
