@@ -1,19 +1,18 @@
 <aside
-  class="bg-neutral-50 p-4 w-64 h-full flex flex-col"
-  x-data="{ open: false }"
+  class="hidden sm:static bg-neutral-50 dark:bg-neutral-900 dark:text-white p-4 w-64 h-full md:flex flex-col"
 >
   <div class="flex items-center space-x-2 mb-4">
     <img src="/favicon-32x32.png" alt="" />
     <a href="/" class="text-base font-medium">File Uploader</a>
     <a
-      href="https://github.com/your-repo"
+      href="https://github.com/arnplsrz/file-uploader"
       target="_blank"
       rel="noopener noreferrer"
       class="ml-auto"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 text-gray-600 hover:text-gray-800"
+        class="h-6 w-6 dark:text-white text-neutral-800 dark:hover:text-white/75 hover:text-neutral-800/75 transition-colors"
         fill="currentColor"
         viewBox="0 0 24 24"
       >
@@ -23,8 +22,8 @@
       </svg>
     </a>
   </div>
-  <% if (locals.user) { %> <% } %>
-  <div class="mt-auto flex items-center justify-between p-2">
+
+  <div class="mt-auto hidden sm:flex items-center justify-between p-2">
     <div class="flex items-center space-x-2">
       <img
         src="<%= locals.user.avatar || '/favicon-32x32.png' %>"
@@ -36,7 +35,7 @@
     <div x-data="{ openMenu: false }" class="relative">
       <button
         @click="openMenu = !openMenu"
-        class="p-1 rounded hover:bg-gray-200 focus:outline-none"
+        class="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-600 focus:outline-none"
         aria-label="User menu"
       >
         <svg
@@ -54,19 +53,20 @@
           />
         </svg>
       </button>
+
       <div
         x-show="openMenu"
         @click.away="openMenu = false"
         x-transition
-        class="absolute -right-32 top-1 transform -translate-y-1/2 w-32 bg-white border border-neutral-200 rounded-sm shadow-lg z-20"
+        class="absolute -right-32 top-1 transform -translate-y-1/2 w-32 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 dark:text-white rounded-sm shadow-lg z-20 [&_a]:block [&_a]:px-4 [&_a]:py-2"
         x-cloak
       >
         <a
           href="/account"
-          class="block px-4 py-2 hover:bg-gray-100 border-b border-neutral-200"
+          class="border-b border-neutral-200 dark:border-neutral-800"
           >Account</a
         >
-        <a href="/logout" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+        <a href="/logout">Logout</a>
       </div>
     </div>
   </div>

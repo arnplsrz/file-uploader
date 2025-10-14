@@ -1,16 +1,62 @@
 <% if (locals.user) { %>
-  <body class="flex flex-1">
-    <%- include('../partials/aside', { folder: folder }) %>
-    <%- include("../partials/error", { message: message }) %>
-  <main class="flex-1 p-6 bg-white border-l border-neutral-200 space-y-4">
+<body class="flex flex-1 bg-neutral-50 dark:bg-neutral-900">
+  <%- include('../partials/aside', { folder: folder }) %>
+  <%- include("../partials/error", { message: message }) %>
+  <main class="flex-1 m-0 sm:m-4 sm:rounded-lg bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-50 space-y-4 shadow-sm [&_h2]:px-6 [&_ul]:px-6">
 
-    <header class="space-y-4 *:flex *:justify-between">
-      <div class="space-x-4">
+    <header class="space-y-4 pt-6 px-6 *:flex *:justify-between">
+      <section class="items-center space-x-4">
+        <div x-data="{ openSidebar: false }">
+          <button
+            class="block sm:hidden dark:text-white cursor-pointer"
+            x-on:click="openSidebar = !openSidebar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
+          </button>
+
+          <div
+            class="fixed inset-0 z-50 bg-neutral-50 dark:bg-neutral-900 dark:text-white p-4 w-64 h-full md:flex flex-col"
+            x-show="openSidebar"
+            x-cloak
+            x-on:click.outside="openSidebar = false"
+            x-on:keydown.escape.prevent.stop="openSidebar = false"
+            x-transition:enter="transition ease-in-out duration-300 transform"
+            x-transition:enter-start="-translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in-out duration-300 transform"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="-translate-x-full"
+          >
+            <div class="flex items-center space-x-2 mb-4">
+              <img src="/favicon-32x32.png" alt="" />
+              <a href="/" class="text-base font-medium">File Uploader</a>
+              <a
+                href="https://github.com/arnplsrz/file-uploader"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-auto"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 dark:text-white text-neutral-800 dark:hover:text-white/75 hover:text-neutral-800/75 transition-colors"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.754-1.333-1.754-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.807 1.305 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.335-5.466-5.93 0-1.31.47-2.38 1.236-3.22-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.29-1.552 3.296-1.23 3.296-1.23.655 1.653.243 2.873.12 3.176.77.84 1.234 1.91 1.234 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.1.823 2.22 0 1.606-.015 2.896-.015 3.286 0 .32.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- MARK: Search bar -->
         <div class="relative sm:w-3/5 w-full">
           <input
             type="text"
             placeholder="Search files..."
-            class="w-full p-2 pl-10 border border-neutral-200 rounded"
+            class="w-full p-2 pl-10 bg-neutral-200 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 focus-visible:border-neutral-400 dark:focus-visible:border-neutral-600 focus-visible:ring-neutral-300 dark:focus-visible:ring-neutral-700 focus-visible:ring-[3px] rounded outline-none"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -28,10 +74,38 @@
           </svg>
         </div>
 
+        <div x-data="{ openMenu: false }" class="block sm:hidden relative">
+          <button
+            @click="openMenu = !openMenu"
+            class="w-8 h-8 rounded-full object-cover border border-neutral-200 dark:border-neutral-800 p-1 hover:bg-gray-200 dark:hover:bg-neutral-600 focus:outline-none cursor-pointer"
+            aria-label="User menu"
+          >
+            <img
+              src="<%= locals.user.avatar || '/favicon-32x32.png' %>"
+              alt="User Avatar"
+            />
+          </button>
+          
+          <div
+            x-show="openMenu"
+            @click.away="openMenu = false"
+            x-transition
+            class="absolute -left-27 -bottom-29 transform -translate-y-1/2 w-32 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 dark:text-white rounded-sm shadow-lg z-20 [&_a]:block [&_a]:px-4 [&_a]:py-2"
+            x-cloak
+          >
+            <a
+              href="/account"
+              class="border-b border-neutral-200 dark:border-neutral-800"
+              >Account</a
+            >
+            <a href="/logout">Logout</a>
+          </div>
+
         <% if (root.id != folder.id) { %>
           <div x-data="{open: false}">
+          <!-- MARK: Search button -->
             <button
-              class="bg-gray-800 text-white font-semibold px-3 py-2 rounded hover:bg-gray-700 flex items-center space-x-2 cursor-pointer"
+              class="bg-primary-0 text-neutral-950 font-semibold px-3 py-2 rounded flex items-center space-x-2 cursor-pointer"
               @click="open = !open"
             >
               <span>Share folder</span>
@@ -50,11 +124,25 @@
                 />
               </svg>
             </button>
-            <div class="absolute inset-0 bg-neutral-50/25 flex items-center justify-center" x-show="open" x-transition x-cloak>
-              <form action="/folder/<%= folder.id %>/share" method="post" class="p-4 border border-neutral-200 shadow-sm rounded-md" @click.away="open = false">
+
+            <!-- MARK: Share form -->
+            <div 
+              class="absolute inset-0 bg-neutral-950/30 flex items-center justify-center" 
+              x-show="open" 
+              x-transition.opacity
+              x-cloak
+            >
+              <form 
+                action="/folder/<%= folder.id %>/share" 
+                method="post" 
+                class="p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-lg rounded-md"
+                x-show="open" 
+                @click.away="open = false"
+                x-transition
+              >
                 <fieldset>
                   <legend class="text-lg font-semibold mb-2">Share folder</legend>
-                  <div class="space-y-2 mb-4">
+                  <section class="space-y-2 mb-4 [&_div_input]: accent-primary-30">
                     <div>
                       <input type="radio" id="1 day" name="duration" value="1 day" checked>
                       <label for="1 day" class="ml-2">1 day</label>
@@ -67,26 +155,56 @@
                       <input type="radio" id="1 week" name="duration" value="1 week">
                       <label for="1 week" class="ml-2">1 week</label>
                     </div>
-                  </div>
+                  </section>
                 </fieldset>
-              <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">Copy link</button>
-              <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" @click="open = false">Done</button>
+              <section class="flex">
+                <button type="submit" class="border border-neutral-800 text-primary-10 px-4 py-2 flex gap-2 rounded mr-2 cursor-pointer">
+                  <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+                </svg>
+                  Copy link
+                </button>
+                <button type="button" class="bg-primary-0 text-black px-4 py-2 rounded cursor-pointer" @click="open = false">Done</button>
+              </section>
           </form>
-        </div>
+            </div>
           </div>
           <% } %>
-      </div>
+      </section>
 
-      <div class="items-center">
+      <section class="items-center">
+        <!-- MARK: Breadcrumbs -->
         <div>
-          <h1 class="text-2xl font-semibold tracking-tight text-balance">Welcome! <%= locals.user.username %></h1>
-          <p class="text-gray-600">Let's continue your activity and manage your files.</p>
+          <h1 class="mb-1 text-2xl font-semibold tracking-tight text-balance">Welcome! <%= locals.user.username %></h1>
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg>
+            <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %> /&ThickSpace; <% } %>
+            <a href="/folder/<%= b.id %>" class="hover:underline"><%= b.name %></a>
+            <% }) %>
+            <% if (folder.isShared) { %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+                  />
+                </svg>
+              <% } %>
+          </div>
         </div>
 
-        <div class="flex items-center space-x-2" x-data>
+        <div class="hidden sm:flex items-center gap-2" x-data="{ open: false }">
+          <!-- MARK: New folder button -->
           <button
-            @click="$refs.folderDialog.showModal()"
-            class="bg-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-200 flex items-center space-x-2"
+            @click="open = !open"
+            class="bg-primary-20 dark:text-black px-3 py-2 rounded flex items-center space-x-2 cursor-pointer"
             title="Create Folder"
           >
             <svg
@@ -106,9 +224,10 @@
             <span>New Folder</span>
           </button>
 
+          <!-- MARK: Upload file button -->
           <button
             @click="$refs.fileInput.click()"
-            class="bg-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-200 flex items-center space-x-2"
+            class="bg-primary-20 dark:text-black px-3 py-2 rounded flex items-center space-x-2 cursor-pointer"
             title="Upload File"
           >
             <svg
@@ -128,12 +247,21 @@
             <span>Upload File</span>
           </button>
 
-          <dialog
-            class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg"
-            x-ref="folderDialog"
-            x-transition
+          <!-- MARK: New folder form -->
+          <div
+            class="w-screen h-screen bg-neutral-950/30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center justify-center"
+            x-show="open"
+            x-cloak
+            x-transition.opacity
           >
-            <form action="/folder/<%= folder.id %>/create" method="post">
+            <form 
+              action="/folder/<%= folder.id %>/create" 
+              method="post" 
+              x-show="open"
+              @click.away="open = false" 
+              x-transition
+              class="p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded shadow-lg"
+            >
               <label for="folderName" class="block text-sm font-medium mb-2"
                 >Folder Name:</label
               >
@@ -141,27 +269,29 @@
                 type="text"
                 name="folderName"
                 id="folderName"
-                class="w-full p-2 border border-neutral-200 rounded mb-4"
+                class="w-full p-2 rounded mb-4 bg-neutral-800 text-gray-200"
+                placeholder="Enter folder name"
                 required
               />
               <div class="flex justify-end gap-2">
                 <button
                   type="button"
-                  @click="$refs.folderDialog.close()"
-                  class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  @click="open = false"
+                  class="px-4 py-2 rounded border border-neutral-800 font-semibold text-primary-0 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  class="px-4 py-2 rounded border border-neutral-800 font-semibold text-primary-0 cursor-pointer"
                 >
                   Create
                 </button>
               </div>
             </form>
-          </dialog>
-      
+          </div>
+          
+          <!-- MARK: Upload folder form -->
           <form
             action="/folder/<%= folder.id %>/upload"
             method="post"
@@ -177,56 +307,53 @@
             />
           </form>
         </div>
-      </div>
+      </section>
     </header>
 
-    <nav class="mb-4 flex justify-between items-center text-base text-gray-600">
-      <div class="flex items-center space-x-2">
-        <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %> /&ThickSpace; <% } %>
-        <a href="/folder/<%= b.id %>" class="hover:underline"><%= b.name %></a>
-        <% }) %>
-        <% if (folder.isShared) { %>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-              />
-            </svg>
-          <% } %>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">Name</button>
-        <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">Type</button>
-        <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">Modified</button>
-      </div>
+    <!-- MARK: Filter buttons -->
+    <nav class="flex flex-col text-base">
+      <section class="px-6 flex flex-wrap items-center gap-2">
+        <button class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer">
+          Name
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <path d="M480-360 280-560h400L480-360Z"/>
+          </svg>
+        </button>
+        <button class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer">
+          Type
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <path d="M480-360 280-560h400L480-360Z"/>
+          </svg>
+        </button>
+        <button class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer">
+          Modified
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <path d="M480-360 280-560h400L480-360Z"/>
+          </svg>
+        </button>
+      </section>
+      <hr class="mt-4 border-t-neutral-200 dark:border-t-neutral-600">
     </nav>
 
+    <!-- MARK: Folders -->
     <h2 class="text-lg font-semibold mb-4">Folders</h2>
-    <ul class="grid grid-cols-5 gap-4 mb-8">
+    <ul class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
       <% if (folders && folders.length > 0) { %> <% folders.forEach(folder => {
       %>
       <li
-        class="border border-neutral-200 rounded p-4 relative"
+        class="bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded p-4 relative"
         x-data="{ open: false }"
       >
         <div class="flex justify-between items-center">
           <span
             ><a
               href="/folder/<%= folder.id %>"
-              class="text-neutral-800 hover:underline font-medium"
+              class="hover:underline font-medium"
               ><%= folder.name %></a
             ></span
           >
           <button
-            class="p-1 rounded hover:bg-gray-200 focus:outline-none"
+            class="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-600 focus:outline-none"
             @click="open = !open"
             aria-label="Folder options"
           >
@@ -246,50 +373,54 @@
             </svg>
           </button>
         </div>
+
+        <!-- MARK: Folder actions -->
         <div
           x-show="open"
           @click.away="open = false"
           x-transition
-          class="absolute top-full right-0 mt-1 w-32 bg-white border border-neutral-200 rounded z-10"
+          class="absolute top-full right-0 mt-1 w-32 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded z-10"
           x-cloak
         >
-        <form
-          action="/folder/<%= folder.id %>/rename"
-          method="post"
-          x-data="{ openRename: false }"
-        >
-          <div class="w-screen h-screen fixed inset-0 bg-neutral-50/25 flex items-center justify-center"
-          x-show="openRename"
-          x-transition
->   
-            <div class="z-auto p-4 border bg-white border-neutral-100 rounded-md shadow-sm flex flex-col"           @click.away="openRename = false"
->
-              <label class="mb-2" for="newName">Rename: <%= folder.name %></label>
-              <input
-                type="text"
-                name="newName"
-                placeholder="Rename folder"
-                class="mb-4 border border-neutral-200 rounded-md p-1 mr-2"
-                required
-              />
-              <button
-                type="submit"
-                class="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            class="w-full block px-4 py-2 hover:bg-gray-100 border-b border-neutral-200 text-left"
-            @click="openRename = !openRename"
+          <form
+            action="/folder/<%= folder.id %>/rename"
+            method="post"
+            x-data="{ openRename: false }"
           >
-            Rename
-          </button>
+            <div class="w-screen h-screen fixed inset-0 flex items-center justify-center"
+            x-show="openRename"
+            x-transition
+  >   
+              <div class="z-auto p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md shadow-sm flex flex-col"
+              @click.away="openRename = false"
+  >
+                <label class="mb-2 font-semibold" for="newName">
+                  Rename: <span class="italic"><%= folder.name %></span>
+                </label>
+                <input
+                  type="text"
+                  name="newName"
+                  placeholder="Rename folder"
+                  class="mb-4 bg-neutral-800 rounded-md p-2"
+                  required
+                />
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-primary-10 text-black rounded"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
 
-        </form>
+            <button
+              type="button"
+              class="w-full block px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 text-left cursor-pointer"
+              @click="openRename = !openRename"
+            >
+              Rename
+            </button>
+          </form>
 
           <form
             action="/folder/<%= folder.id %>/delete"
@@ -298,7 +429,7 @@
           >
             <button
               type="submit"
-              class="w-full block px-4 py-2 hover:bg-gray-100 text-left text-red-600"
+              class="w-full block px-4 py-2 text-left text-red-600 cursor-pointer"
             >
               Delete
             </button>
@@ -306,30 +437,29 @@
         </div>
       </li>
       <% }) %> <% } else { %>
-      <li class="text-gray-500">No subfolders available.</li>
+      <p class="text-gray-300">No subfolders available.</p>
       <% } %>
     </ul>
 
+    <!-- MARK: Files -->
     <h2 class="text-lg font-semibold mb-4">Files</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+    <ul class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
       <% if (files && files.length > 0) { %> <% files.forEach(file => { %>
-      <div class="border border-neutral-200 rounded p-4">
-        <ul>
-          <li>
-            <a
-              href="/file/<%= file.id %>"
-              class="text-neutral-800 hover:underline font-medium break-words"
-              ><%= file.name %></a
-            >
-          </li>
-          <li class="text-sm text-gray-600">Size: <%= file.size %></li>
-          <li class="text-sm text-gray-600">Updated: <%= file.updatedAt %></li>
-        </ul>
-      </div>
+      <li class="bg-neutral-50 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 p-4">
+        <a
+          href="/file/<%= file.id %>"
+          class="hover:underline font-medium break-words"
+          ><%= file.name %></a
+        >
+        <section class="dark:[&_span]:text-gray-300 text-sm">
+          <p>Size: <span><%= file.size %></span></p>
+          <p>Updated: <span><%= file.updatedAt %></span></p>
+        </section>
+      </li>
       <% }) %> <% } else { %>
-      <p class="text-gray-500">No files available.</p>
+      <p class="text-gray-300">No files available.</p>
       <% } %>
-    </div>
+    </ul>
   </main>
 </body>
 <% } %>
