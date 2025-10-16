@@ -1,7 +1,7 @@
 <aside
-  class="hidden sm:static bg-neutral-50 dark:bg-neutral-900 dark:text-white p-4 w-64 h-full md:flex flex-col"
+  class="hidden h-screen w-64 flex-col bg-neutral-50 py-4 pl-4 sm:static lg:flex dark:bg-neutral-900 dark:text-white"
 >
-  <div class="flex items-center space-x-2 mb-4">
+  <div class="mb-4 flex items-center space-x-2">
     <img src="/favicon-32x32.png" alt="" />
     <a href="/" class="text-base font-medium">File Uploader</a>
     <a
@@ -12,7 +12,7 @@
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 dark:text-white text-neutral-800 dark:hover:text-white/75 hover:text-neutral-800/75 transition-colors"
+        class="h-6 w-6 text-neutral-800 transition-colors hover:text-neutral-800/75 dark:text-white dark:hover:text-white/75"
         fill="currentColor"
         viewBox="0 0 24 24"
       >
@@ -23,51 +23,30 @@
     </a>
   </div>
 
-  <div class="mt-auto hidden sm:flex items-center justify-between p-2">
+  <div class="mt-auto hidden items-center justify-between p-2 sm:flex">
     <div class="flex items-center space-x-2">
       <img
-        src="<%= locals.user.avatar || '/favicon-32x32.png' %>"
+        src="<%= '/favicon-32x32.png' %>"
         alt="User Avatar"
-        class="w-8 h-8 rounded-full object-cover"
+        class="h-8 w-8 rounded-full object-cover"
       />
       <span class="font-medium"><%= locals.user.username %></span>
     </div>
-    <div x-data="{ openMenu: false }" class="relative">
-      <button
-        @click="openMenu = !openMenu"
-        class="p-1 rounded hover:bg-gray-200 dark:hover:bg-neutral-600 focus:outline-none"
-        aria-label="User menu"
+    <a
+      href="/logout"
+      class="rounded p-1 hover:bg-gray-200 focus:outline-none dark:hover:bg-neutral-600"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#e3e3e3"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 12h.01M12 12h.01M18 12h.01"
-          />
-        </svg>
-      </button>
-
-      <div
-        x-show="openMenu"
-        @click.away="openMenu = false"
-        x-transition
-        class="absolute -right-32 top-1 transform -translate-y-1/2 w-32 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 dark:text-white rounded-sm shadow-lg z-20 [&_a]:block [&_a]:px-4 [&_a]:py-2"
-        x-cloak
-      >
-        <a
-          href="/account"
-          class="border-b border-neutral-200 dark:border-neutral-800"
-          >Account</a
-        >
-        <a href="/logout">Logout</a>
-      </div>
-    </div>
+        <path
+          d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+        />
+      </svg>
+    </a>
   </div>
 </aside>
