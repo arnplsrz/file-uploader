@@ -24,12 +24,29 @@ const getRootFolder = async (userId) => {
   return rootFolder;
 };
 
-const getFiles = async (folderId, sortField, sortOrder) => {
+const getSubfolders = async (folderId, sortField, sortOrder, search) => {
+  try {
+    const folders = await prisma.folder.findMany({
+      where: { parentId: folderId, name: { contains: search } },
+      orderBy: { [sortField]: sortOrder },
+    });
+
+    return folders.map((folder) => ({
+      ...folder,
+      updatedAt: formatDate(folder.updatedAt),
+    }));
+  } catch (err) {
+    console.error("Error fetching subfolders:", err);
+    throw err;
+  }
+};
+
+const getFiles = async (folderId, sortField, sortOrder, search) => {
   try {
     let sort = sortField === "type" ? "name" : sortField;
 
     const files = await prisma.file.findMany({
-      where: { folderId: folderId },
+      where: { folderId: folderId, name: { contains: search } },
       orderBy: { [sort]: sortOrder },
     });
 
@@ -40,23 +57,6 @@ const getFiles = async (folderId, sortField, sortOrder) => {
     }));
   } catch (err) {
     console.error("Error fetching files:", err);
-    throw err;
-  }
-};
-
-const getSubfolders = async (folderId, sortField, sortOrder) => {
-  try {
-    const folders = await prisma.folder.findMany({
-      where: { parentId: folderId },
-      orderBy: { [sortField]: sortOrder },
-    });
-
-    return folders.map((folder) => ({
-      ...folder,
-      updatedAt: formatDate(folder.updatedAt),
-    }));
-  } catch (err) {
-    console.error("Error fetching subfolders:", err);
     throw err;
   }
 };

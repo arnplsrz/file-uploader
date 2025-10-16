@@ -54,14 +54,19 @@
 
         <!-- MARK: Search bar -->
         <div class="relative lg:w-3/5 w-full">
-          <input
-            type="text"
-            placeholder="Search files..."
-            class="w-full p-2 pl-10 bg-neutral-200 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 focus-visible:border-neutral-400 dark:focus-visible:border-neutral-600 focus-visible:ring-neutral-300 dark:focus-visible:ring-neutral-700 focus-visible:ring-[3px] rounded outline-none"
-          />
+          <form action="/folder/<%= folder.id %>" method="get">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search files..."
+              class="w-full p-2 pl-10 bg-neutral-200 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 focus-visible:border-neutral-400 dark:focus-visible:border-neutral-600 focus-visible:ring-neutral-300 dark:focus-visible:ring-neutral-700 focus-visible:ring-[3px] rounded outline-none"
+              value="<%= query.search %>"
+            />
+          </form>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -73,6 +78,23 @@
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"s
             />
           </svg>
+          <% if (query.search) { %>
+            <a 
+              href="/folder/<%= folder.id %>"
+              class="cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="currentColor"
+              >
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+              </svg>
+            </a>
+          <% } %>
         </div>
 
         <!-- MARK: Share button -->
@@ -422,6 +444,7 @@
                 <input
                   type="text"
                   name="newName"
+                  id="newName"
                   placeholder="Rename folder"
                   class="mb-4 bg-neutral-800 rounded-md p-2"
                   required

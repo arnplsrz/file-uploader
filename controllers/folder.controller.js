@@ -25,7 +25,7 @@ const getFolder = async (req, res, next) => {
 
 const getFolderData = async (req, res, next) => {
   try {
-    const { sort = "name", order = "asc" } = req.query;
+    const { sort = "name", order = "asc", search } = req.query;
     console.log(req.query);
 
     const allowedFields = ["name", "createdAt"];
@@ -44,8 +44,8 @@ const getFolderData = async (req, res, next) => {
     }
 
     const root = await getRootFolder(req.user.id);
-    const folders = await getSubfolders(folderId, sortField, sortOrder);
-    const files = await getFiles(folderId, sortField, sortOrder);
+    const folders = await getSubfolders(folderId, sortField, sortOrder, search);
+    const files = await getFiles(folderId, sortField, sortOrder, search);
     const breadcrumbs = await getBreadcrumbs(folderId);
 
     res.render("index", {
