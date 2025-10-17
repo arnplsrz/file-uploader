@@ -1,37 +1,57 @@
 <aside
-  class="hidden h-screen w-64 flex-col bg-neutral-50 py-4 pl-4 sm:static lg:flex dark:bg-neutral-900 dark:text-white"
+  class="hidden w-64 flex-col bg-neutral-50 py-4 pl-4 sm:static lg:flex dark:bg-neutral-900 dark:text-white"
 >
-  <div class="mb-4 flex items-center space-x-2">
+  <h1 class="mb-4 flex items-center justify-between">
     <img src="/favicon-32x32.png" alt="" />
     <a href="/" class="text-base font-medium">File Uploader</a>
-    <a
-      href="https://github.com/arnplsrz/file-uploader"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="ml-auto"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 text-neutral-800 transition-colors hover:text-neutral-800/75 dark:text-white dark:hover:text-white/75"
-        fill="currentColor"
-        viewBox="0 0 24 24"
+    <div class="flex gap-2 text-neutral-800 transition-colors dark:text-white">
+      <button
+        class="cursor-pointer hover:text-neutral-900/75 dark:hover:text-white/75"
+        id="themeToggleButton"
       >
-        <path
-          d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.754-1.333-1.754-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.807 1.305 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.335-5.466-5.93 0-1.31.47-2.38 1.236-3.22-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.29-1.552 3.296-1.23 3.296-1.23.655 1.653.243 2.873.12 3.176.77.84 1.234 1.91 1.234 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.1.823 2.22 0 1.606-.015 2.896-.015 3.286 0 .32.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"
-        />
-      </svg>
-    </a>
-  </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="currentColor"
+        >
+          <path
+            d="M396-396q-32-32-58.5-67T289-537q-5 14-6.5 28.5T281-480q0 83 58 141t141 58q14 0 28.5-2t28.5-6q-39-22-74-48.5T396-396Zm57-56q51 51 114 87.5T702-308q-40 51-98 79.5T481-200q-117 0-198.5-81.5T201-480q0-65 28.5-123t79.5-98q20 72 56.5 135T453-452Zm290 72q-20-5-39.5-11T665-405q8-18 11.5-36.5T680-480q0-83-58.5-141.5T480-680q-20 0-38.5 3.5T405-665q-8-19-13.5-38T381-742q24-9 49-13.5t51-4.5q117 0 198.5 81.5T761-480q0 26-4.5 51T743-380ZM440-840v-120h80v120h-80Zm0 840v-120h80V0h-80Zm323-706-57-57 85-84 57 56-85 85ZM169-113l-57-56 85-85 57 57-85 84Zm671-327v-80h120v80H840ZM0-440v-80h120v80H0Zm791 328-85-85 57-57 84 85-56 57ZM197-706l-84-85 56-57 85 85-57 57Zm199 310Z"
+          />
+        </svg>
+      </button>
+      <a
+        href="https://github.com/arnplsrz/file-uploader"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ml-auto hover:text-neutral-900/75 dark:hover:text-white/75"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.754-1.333-1.754-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.807 1.305 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.335-5.466-5.93 0-1.31.47-2.38 1.236-3.22-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.29-1.552 3.296-1.23 3.296-1.23.655 1.653.243 2.873.12 3.176.77.84 1.234 1.91 1.234 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.1.823 2.22 0 1.606-.015 2.896-.015 3.286 0 .32.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </div>
+  </h1>
 
-  <div class="mt-auto hidden items-center justify-between p-2 sm:flex">
-    <div class="flex items-center space-x-2">
+  <section class="flex-1"></section>
+
+  <footer class="hidden items-end justify-between p-2 sm:flex">
+    <section class="flex items-center space-x-2">
       <img
         src="<%= '/favicon-32x32.png' %>"
         alt="User Avatar"
         class="h-8 w-8 rounded-full object-cover"
       />
       <span class="font-medium"><%= locals.user.username %></span>
-    </div>
+    </section>
     <a
       href="/logout"
       class="rounded p-1 hover:bg-gray-200 focus:outline-none dark:hover:bg-neutral-600"
@@ -41,12 +61,12 @@
         height="24px"
         viewBox="0 -960 960 960"
         width="24px"
-        fill="#e3e3e3"
+        fill="currentColor"
       >
         <path
           d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
         />
       </svg>
     </a>
-  </div>
+  </footer>
 </aside>
