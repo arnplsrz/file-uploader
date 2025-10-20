@@ -14,7 +14,8 @@ const getFolder = async (req, res, next) => {
     const rootFolder = await getRootFolder(req.user.id);
 
     if (!rootFolder) {
-      throw new Error("Root folder not found for the user.");
+      req.flash("error", "Root folder not found for the user.");
+      return res.redirect("/folder");
     }
 
     return res.redirect(`/folder/${rootFolder.id}`);
@@ -39,8 +40,8 @@ const getFolderData = async (req, res, next) => {
     });
 
     if (!folder) {
-      console.error(`Folder with ID ${folderId} not found.`);
-      return res.status(404).send("Folder not found.");
+      req.flash("error", `Folder with ID ${folderId} not found.`);
+      return res.redirect("/folder");
     }
 
     const root = await getRootFolder(req.user.id);
@@ -61,7 +62,6 @@ const getFolderData = async (req, res, next) => {
       query: req.query,
     });
   } catch (err) {
-    console.error("Error in getFolderById:", err);
     next(err);
   }
 };
@@ -75,13 +75,13 @@ const uploadFile = async (req, res, next) => {
     });
 
     if (!folder) {
-      return res.status(404).send("Folder not found.");
+      req.flash("error", "Folder not found.");
+      return res.redirect("/folder");
     }
 
     if (!req.file) {
-      return res
-        .status(400)
-        .send("File upload failed: Invalid file type or size.");
+      req.flash("error", "Invalid file type");
+      return res.redirect(`/folder/${folderId}`);
     }
 
     // Upload file to Supabase Storage
@@ -96,7 +96,8 @@ const uploadFile = async (req, res, next) => {
       });
 
     if (error) {
-      throw new Error(`Supabase upload error: ${error.message}`);
+      req.flash("error", error);
+      return res.redirect(`/folder/${folderId}`);
     }
 
     await prisma.file.create({
@@ -109,6 +110,7 @@ const uploadFile = async (req, res, next) => {
       },
     });
 
+    req.flash("success", "File uploaded successfully");
     return res.redirect(`/folder/${folderId}`);
   } catch (err) {
     next(err);
@@ -125,7 +127,8 @@ const createFolder = async (req, res, next) => {
     });
 
     if (!parentFolder) {
-      return res.status(404).send("Parent folder not found.");
+      req.flash("error", "Parent folder not found.");
+      return res.redirect(`/folder/${parentId}`);
     }
 
     const newFolder = await prisma.folder.create({
@@ -155,11 +158,12 @@ const renameFolder = async (req, res, next) => {
     });
 
     if (!folder) {
-      return res.status(404).send("Folder not found.");
+      req.flash("error", "Folder not found.");
+      return res.redirect(`/folder/${folderId}`);
     }
 
     if (folder.userId !== req.user.id) {
-      return res.status(403).send("Access denied.");
+      return res.redirect("/signin");
     }
 
     await prisma.folder.update({
@@ -182,7 +186,8 @@ const deleteFolder = async (req, res, next) => {
     });
 
     if (!folder) {
-      return res.status(404).send("Folder not found.");
+      req.flash("error", "Folder not found.");
+      return res.redirect(`/folder/${folderId}`);
     }
 
     await prisma.folder.delete({

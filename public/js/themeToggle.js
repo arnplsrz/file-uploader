@@ -9,5 +9,7 @@ function toggleTheme() {
   document.querySelector("html").setAttribute("data-theme", localStorage.theme);
 }
 
-themeToggleButton.addEventListener("click", toggleTheme);
-themeToggleSidebarButton.addEventListener("click", toggleTheme);
+if (themeToggleButton) themeToggleButton.addEventListener("click", toggleTheme);
+
+if (themeToggleSidebarButton)
+  themeToggleSidebarButton.addEventListener("click", toggleTheme);

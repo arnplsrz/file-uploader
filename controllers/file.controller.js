@@ -11,17 +11,18 @@ const getFileDetails = async (req, res, next) => {
     const file = await getFileById(fileId);
 
     if (!file) {
-      return res.status(404).send("File not found.");
+      req.flash("error", "File not found.");
+      return res.redirect("/folder");
     }
 
     res.render("index", {
       title: file.name,
       content: "pages/file",
       file: file,
+      message: req.flash(),
       user: req.user,
     });
   } catch (err) {
-    console.error("Error in getFileDetails:", err);
     next(err);
   }
 };
@@ -35,7 +36,8 @@ const downloadFile = async (req, res, next) => {
     });
 
     if (!file) {
-      return res.status(404).send("File not found.");
+      req.flash("error", "File not found.");
+      return res.redirect("/folder");
     }
 
     // Generate signed URL for download from Supabase
@@ -47,13 +49,13 @@ const downloadFile = async (req, res, next) => {
     });
 
     if (error) {
-      throw new Error(`Supabase signed URL error: ${error.message}`);
+      req.flash("error", error.message);
+      return res.redirect(`/file/${fileId}`);
     }
 
     // Redirect to signed URL for direct download
     res.redirect(signedUrl);
   } catch (err) {
-    console.error("Error in downloadFile:", err);
     next(err);
   }
 };
