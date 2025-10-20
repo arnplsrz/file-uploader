@@ -1,66 +1,118 @@
-<header
-  class="flex justify-between items-center p-4 bg-white border-b border-neutral-200"
->
-  <div class="flex items-center space-x-2">
-    <img src="/favicon.ico" alt="File Uploader Icon" class="h-8 w-8" />
-    <h1 class="text-xl font-semibold">File Uploader</h1>
-  </div>
-  <a
-    href="/signup"
-    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-    >Sign Up</a
+<body class="flex flex-col">
+  <header
+    class="flex justify-between items-center p-4 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700"
   >
-</header>
-
-<!-- TODO: Add breadcrumbs -->
-<main class="p-6 bg-white">
-  <nav class="mb-4 flex justify-between items-center text-base text-gray-600">
     <div class="flex items-center space-x-2">
-      <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %>
-      /&ThickSpace; <% } %>
-      <a href="/share/<%= b.id %>" class="hover:underline"><%= b.name %></a>
-      <% }) %>
+      <img src="/favicon.ico" alt="File Uploader Icon" class="h-8 w-8" />
+      <h1 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">File Uploader</h1>
     </div>
-    <div class="flex items-center space-x-2">
-      <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">
-        Name
-      </button>
-      <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">
-        Type
-      </button>
-      <button class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded">
-        Modified
-      </button>
+    <div class="flex gap-2">
+      <% if (locals.user) { %>
+        <a
+          href="/"
+          class="bg-primary-0 text-black px-4 py-2 rounded hover:bg-primary-10"
+          >Home</a
+        >
+      <% } else { %>
+        <a
+          href="/signup"
+          class="bg-primary-0 text-black px-4 py-2 rounded hover:bg-primary-10"
+          >Sign Up</a
+        >
+        <a
+          href="/signin"
+          class="bg-primary-0 text-black px-4 py-2 rounded hover:bg-primary-10"
+          >Sign In</a
+        >
+      <% } %>
     </div>
-  </nav>
-
-  <h2 class="text-lg font-semibold mb-4">Folders</h2>
-  <ul class="grid grid-cols-5 gap-4 mb-8">
-    <% if (folders && folders.length > 0) { %> <% folders.forEach(folder => { %>
-    <li class="border border-neutral-200 rounded p-4">
-      <a
-        href="/share/<%= folder.id %>"
-        class="text-neutral-800 hover:underline font-medium"
-        ><%= folder.name %></a
-      >
-    </li>
-    <% }) %> <% } else { %>
-    <li class="text-gray-500">No subfolders available.</li>
-    <% } %>
-  </ul>
-
-  <h2 class="text-lg font-semibold mb-4">Files</h2>
-  <ul class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-    <% if (files && files.length > 0) { %> <% files.forEach(file => { %>
-    <li class="border border-neutral-200 rounded p-4">
-      <p class="text-neutral-800 hover:underline font-medium break-words">
-        <%= file.name %>
-      </p>
-      <p class="text-sm text-gray-600">Size: <%= file.size %></p>
-      <p class="text-sm text-gray-600">Updated: <%= file.updatedAt %></p>
-    </li>
-    <% }) %> <% } else { %>
-    <p class="text-gray-500">No files available.</p>
-    <% } %>
-  </ul>
-</main>
+  </header>
+  
+  <!-- TODO: Add breadcrumbs -->
+  <main class="p-6 flex-1 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
+    <nav class="mb-4 flex flex-col space-y-2 justify-between text-base text-neutral-600 dark:text-neutral-400">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
+        </svg>
+        <% breadcrumbs.forEach((b, index) => { %> <% if (index > 0) { %>
+        /&ThickSpace; <% } %>
+        <a href="/share/<%= b.id %>" class="hover:underline text-neutral-900 dark:text-neutral-100"><%= b.name %></a>
+        <% }) %>
+      </div>
+      <section class="flex flex-wrap items-center gap-2">
+        <a 
+          href="/share/<%= folder.id %>?sort=name&order=<%= query.sort == "name" && query.order == "desc" ? "asc" : "desc" %>" 
+          class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer"
+        >
+          Name
+          <% if (query.sort == "name" && query.order == "desc") { %>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+              <path d="M480-360 280-560h400L480-360Z"/>
+            </svg>
+          <% } else { %>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+              <path d="m280-400 200-200 200 200H280Z"/>
+            </svg>
+          <% } %>
+        </a>
+        <a 
+          href="/share/<%= folder.id %>?sort=createdAt&order=<%= query.sort == "createdAt" && query.order == "desc" ? "asc" : "desc" %>" 
+          class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer"
+        >
+          Modified
+          <% if (query.sort == "createdAt" && query.order == "desc") { %>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+              <path d="M480-360 280-560h400L480-360Z"/>
+            </svg>
+          <% } else { %>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+              <path d="m280-400 200-200 200 200H280Z"/>
+            </svg>
+          <% } %>
+        </a>
+        <% if (query.sort && query.order) { %>
+        <a 
+          href="/share/<%= folder.id %>" 
+          class="px-3 py-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-sm flex items-center gap-2 cursor-pointer"
+        >
+          Clear
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <path d="M120-280v-80h560v80H120Zm80-160v-80h560v80H200Zm80-160v-80h560v80H280Z"/>
+          </svg>
+        </a>
+        <% } %>
+      </section>
+    </nav>
+  
+    <h2 class="text-lg font-semibold mb-4 text-neutral-900 dark:text-neutral-100">Folders</h2>
+    <ul class="grid grid-cols-5 gap-4 mb-8">
+      <% if (folders && folders.length > 0) { %> <% folders.forEach(folder => { %>
+      <li class="border border-neutral-200 dark:border-neutral-700 rounded p-4 bg-neutral-50 dark:bg-neutral-800">
+        <a
+          href="/share/<%= folder.id %>"
+          class="text-neutral-800 dark:text-neutral-200 hover:underline font-medium"
+          ><%= folder.name %></a
+        >
+      </li>
+      <% }) %> <% } else { %>
+      <p class="text-neutral-500 dark:text-neutral-400 col-span-full">No subfolders available.</p>
+      <% } %>
+    </ul>
+  
+    <h2 class="text-lg font-semibold mb-4 text-neutral-900 dark:text-neutral-100">Files</h2>
+    <ul class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+      <% if (files && files.length > 0) { %> <% files.forEach(file => { %>
+      <li class="border border-neutral-200 dark:border-neutral-700 rounded p-4 bg-neutral-50 dark:bg-neutral-800">
+        <p class="text-neutral-800 dark:text-neutral-200 hover:underline font-medium break-words">
+          <%= file.name %>
+        </p>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">Size: <%= file.size %></p>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">Updated: <%= file.updatedAt %></p>
+      </li>
+      <% }) %> <% } else { %>
+      <p class="text-neutral-500 dark:text-neutral-400 col-span-full">No files available.</p>
+      <% } %>
+    </ul>
+  </main>
+</body>

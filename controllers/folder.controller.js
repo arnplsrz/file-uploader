@@ -255,6 +255,13 @@ const shareFolder = async (req, res, next) => {
 
 const getSharedFolder = async (req, res, next) => {
   try {
+    const { sort = "name", order = "asc", search } = req.query;
+    console.log(req.query);
+
+    const allowedFields = ["name", "createdAt"];
+    const sortField = allowedFields.includes(sort) ? sort : "name";
+    const sortOrder = order === "desc" ? "desc" : "asc";
+
     const folderId = req.params.id;
 
     const folder = await prisma.folder.findUnique({
@@ -264,8 +271,13 @@ const getSharedFolder = async (req, res, next) => {
       },
     });
 
-    const folders = await getSubfolders(folderId);
-    const files = await getFiles(folderId);
+    if (!folder) {
+      req.flash("error", `Folder with ID ${folderId} not found.`);
+      return res.redirect("/folder");
+    }
+
+    const folders = await getSubfolders(folderId, sortField, sortOrder, search);
+    const files = await getFiles(folderId, sortField, sortOrder, search);
     const breadcrumbs = await getBreadcrumbs(folderId, true);
 
     if (folder.expiresAt.getTime() > new Date().getTime()) {
@@ -276,6 +288,8 @@ const getSharedFolder = async (req, res, next) => {
         folders: folders,
         files: files,
         breadcrumbs: breadcrumbs,
+        user: req.user,
+        query: req.query,
       });
     } else {
       await prisma.folder.update({
